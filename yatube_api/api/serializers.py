@@ -2,24 +2,7 @@
 from rest_framework import serializers
 
 # Projects imports
-from posts.models import Comment, Group, Post, User
-
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        exclude = (
-            'password', 'user_permissions',
-            'is_superuser', 'is_staff',
-            'is_active', 'groups'
-        )
-        read_only_fields = (
-            'password', 'user_permissions',
-            'is_superuser', 'is_staff',
-            'is_active', 'groups',
-            'date_joined', 'last_login'
-        )
+from posts.models import Comment, Group, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
