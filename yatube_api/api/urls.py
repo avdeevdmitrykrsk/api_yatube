@@ -1,33 +1,22 @@
-from rest_framework import routers
-
+# Thirdparty imports
 from django.urls import include, path
+from rest_framework import routers
 from rest_framework.authtoken import views
 
-from api.views import CommentViewSet, GroupViewSet, PostViewSet
+# Projects imports
+from api.views import CommentViewSet, GroupViewSet, PostViewSet, UserViewSet
 
-
-router = routers.DefaultRouter()
-router.register(r'posts', PostViewSet)
-router.register(r'groups', GroupViewSet)
+# V1_router settings
+v1_router = routers.DefaultRouter()
+v1_router.register('v1/users', UserViewSet, basename='users')
+v1_router.register('v1/groups', GroupViewSet, basename='groups')
+v1_router.register('v1/posts', PostViewSet, basename='posts')
+v1_router.register(
+    r"v1/posts/(?P<post_id>\d+)/comments",
+    CommentViewSet, basename="comments"
+)
 
 urlpatterns = [
-    path('posts/<int:post_id>/comments/', CommentViewSet.as_view(
-        {
-            'get': 'list',
-            'post': 'create'
-        }
-    )),
-    path(
-        'posts/<int:post_id>/comments/<int:comment_id>/',
-        CommentViewSet.as_view(
-            {
-                'get': 'retrieve',
-                'put': 'update',
-                'patch': 'partial_update',
-                'delete': 'destroy'
-            }
-        )
-    ),
-    path('api-token-auth/', views.obtain_auth_token),
-    path('', include(router.urls)),
+    path("v1/api-token-auth/", views.obtain_auth_token),
+    path("", include(v1_router.urls)),
 ]

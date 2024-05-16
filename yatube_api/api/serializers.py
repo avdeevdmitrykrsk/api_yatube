@@ -1,35 +1,50 @@
+# Thirdparty imports
 from rest_framework import serializers
 
-from posts.models import Comment, Group, Post
+# Projects imports
+from posts.models import Comment, Group, Post, User
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        exclude = (
+            'password', 'user_permissions',
+            'is_superuser', 'is_staff',
+            'is_active', 'groups'
+        )
+        read_only_fields = (
+            'password', 'user_permissions',
+            'is_superuser', 'is_staff',
+            'is_active', 'groups',
+            'date_joined', 'last_login'
+        )
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(
-        read_only=True, default=serializers.CurrentUserDefault()
+    author = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
     )
 
     class Meta:
         model = Post
-        fields = ('id', 'text', 'author', 'image', 'group', 'pub_date')
-
-    def create(self, validated_data):
-        post = Post.objects.create(**validated_data)
-        return post
+        fields = '__all__'
 
 
 class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('id', 'title', 'slug', 'description')
+        fields = '__all__'
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(
-        default=serializers.CurrentUserDefault()
+    author = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
     )
 
     class Meta:
         model = Comment
-        fields = ('id', 'author', 'post', 'text', 'created')
-        read_only_fields = ('author', 'post')
+        fields = '__all__'
+        read_only_fields = ('post',)

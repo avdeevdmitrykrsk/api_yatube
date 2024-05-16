@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+.isort.cfg
 
 # Distribution / packaging
 .Python
